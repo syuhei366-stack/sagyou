@@ -9,6 +9,7 @@ const lastUpdatedElement = document.getElementById('last-updated');
 const statusDot = document.querySelector('.dot');
 const statusText = document.querySelector('.status-text');
 const comfortText = document.getElementById('comfort-text');
+const adviceText = document.getElementById('advice-text');
 const meterMarker = document.getElementById('meter-marker');
 
 let isFetching = false;
@@ -178,22 +179,34 @@ function animateValue(obj, start, end, duration) {
 }
 
 function updateComfort(temp) {
-    // Range: 10°C to 35°C for the meter
+    // Range: 10°C to 30°C for the meter
     const min = 10;
-    const max = 35;
+    const max = 30;
     const percentage = Math.max(0, Math.min(100, ((temp - min) / (max - min)) * 100));
 
     meterMarker.style.left = `${percentage}%`;
 
+    const adviceContainer = document.getElementById('advice-container');
+
     if (temp < 18) {
         comfortText.textContent = '少し寒い';
         comfortText.style.color = '#3b82f6';
+        adviceText.textContent = 'エアコンの温度を上げてください';
+        adviceText.style.color = '#3b82f6';
+        adviceContainer.style.display = 'flex';
+        adviceContainer.style.borderColor = '#3b82f6';
     } else if (temp > 24) {
         comfortText.textContent = '少し暑い';
         comfortText.style.color = '#ef4444';
+        adviceText.textContent = 'エアコンの温度を下げてください';
+        adviceText.style.color = '#ef4444';
+        adviceContainer.style.display = 'flex';
+        adviceContainer.style.borderColor = '#ef4444';
     } else {
         comfortText.textContent = '快適';
         comfortText.style.color = '#22c55e';
+        adviceText.textContent = '';
+        adviceContainer.style.display = 'none';
     }
 }
 

@@ -41,7 +41,6 @@ body {
 .container {
     width: 100%;
     max-width: 1000px;
-    /* 幅を広げる */
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -85,10 +84,9 @@ h1 {
 .cards-grid {
     display: grid;
     grid-template-columns: 1fr 1.5fr 1fr;
-    /* 中央を少し広く */
     gap: 20px;
-    align-items: center;
-    /* 垂直方向中央揃え（凸型レイアウトの鍵） */
+    align-items: stretch;
+    /* 高さを揃える */
 }
 
 .card {
@@ -103,7 +101,10 @@ h1 {
     flex-direction: column;
     gap: 16px;
     transition: transform 0.3s ease;
-    /* height: 100%; を削除してコンテンツに合わせる */
+    height: 100%;
+    /* 高さを100%にして揃える */
+    justify-content: center;
+    /* 内容を中央揃え */
 }
 
 .card:hover {
@@ -111,20 +112,52 @@ h1 {
     box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color);
 }
 
+/* 左右のカードのスタイル設定 */
+.side-card {
+    justify-content: center;
+}
+
+/* アドバイスメッセージのスタイル */
+.advice-container {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    text-align: center;
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 5px solid var(--glass-border);
+    /* 枠線を太くする (5px) */
+    box-shadow: 0 4px 6px -1px var(--shadow-color);
+    transition: all 0.3s ease;
+    min-height: 100px;
+    /* 高さを確保 */
+    display: flex;
+    /* Flexboxで中央揃え */
+    align-items: center;
+    justify-content: center;
+}
+
+.advice-text {
+    font-size: 10rem;
+    /* さらに大きく (10rem) */
+    font-weight: 700;
+    /* 太字 */
+    margin: 0;
+    line-height: 1.1;
+    /* 行間を調整 */
+}
+
 /* 室温カード（中央）を大きく */
 .cards-grid .card:nth-child(2) {
     font-size: 1.2em;
     padding: 32px;
-    /* パディングも増やして大きく見せる */
     z-index: 10;
-    /* 前面に */
     box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.15);
-    /* 影を強調 */
 }
 
 .cards-grid .card:nth-child(2) .value {
     font-size: 5rem;
-    /* さらに大きく */
 }
 
 .cards-grid .card:nth-child(2) .card-title {
@@ -276,6 +309,10 @@ footer {
 
     .cards-grid .card:nth-child(2) {
         order: -1;
-        /* モバイルでは室温を一番上に */
+    }
+
+    /* モバイルではアドバイスの文字サイズを少し小さくする */
+    .advice-text {
+        font-size: 4rem;
     }
 }

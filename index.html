@@ -14,7 +14,7 @@
 <body>
     <div class="container">
         <header>
-            <h1 class="title">現在の室温</h1>
+            <h1 class="title">３階製図室の室内環境</h1>
             <div class="status">
                 <span class="dot"></span>
                 <span class="status-text">接続中...</span>
@@ -23,7 +23,7 @@
 
         <div class="cards-grid">
             <!-- Card 0: Outdoor Temperature -->
-            <div class="card glass">
+            <div class="card glass side-card">
                 <h2 class="card-title">外気温</h2>
                 <div class="temperature-display">
                     <div class="value-wrapper">
@@ -35,7 +35,7 @@
             </div>
 
             <!-- Card 1: Indoor Temperature -->
-            <div class="card glass">
+            <div class="card glass center-card">
                 <h2 class="card-title">室温</h2>
                 <div class="temperature-display">
                     <div class="value-wrapper">
@@ -47,7 +47,7 @@
             </div>
 
             <!-- Card 2: Comfort -->
-            <div class="card glass">
+            <div class="card glass side-card">
                 <h2 class="card-title">快適な温度域</h2>
                 <div class="comfort-display">
                     <div class="comfort-status">
@@ -58,17 +58,18 @@
                             <div class="meter-fill" id="meter-fill"></div>
                             <div class="meter-ticks">
                                 <span class="tick" style="left: 0%"></span>
-                                <span class="tick" style="left: 20%"></span>
-                                <span class="tick" style="left: 40%"></span>
-                                <span class="tick" style="left: 60%"></span>
-                                <span class="tick" style="left: 80%"></span>
+                                <span class="tick" style="left: 25%"></span>
+                                <span class="tick" style="left: 50%"></span>
+                                <span class="tick" style="left: 75%"></span>
                                 <span class="tick" style="left: 100%"></span>
                             </div>
                             <div class="meter-marker" id="meter-marker"></div>
                         </div>
                         <div class="range-labels">
                             <span>10°C</span>
+                            <span>15°C</span>
                             <span>20°C</span>
+                            <span>25°C</span>
                             <span>30°C</span>
                         </div>
                     </div>
@@ -77,6 +78,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div id="advice-container" class="advice-container" style="display: none;">
+            <p id="advice-text"></p>
         </div>
 
         <footer>
