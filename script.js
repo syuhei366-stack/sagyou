@@ -1,8 +1,10 @@
 // Configuration will be loaded from /config endpoint
 let CONFIG = null;
-const API_URL = '/api/states/sensor.rtr574_i_52c0090b_temperature';
+const INDOOR_API_URL = '/api/states/sensor.rtr574_i_52c0090b_temperature';
+const OUTDOOR_API_URL = '/api/states/sensor.hioki_wen_du';
 
 const tempValueElement = document.getElementById('temperature-value');
+const outdoorTempValueElement = document.getElementById('outdoor-temperature-value');
 const lastUpdatedElement = document.getElementById('last-updated');
 const statusDot = document.querySelector('.dot');
 const statusText = document.querySelector('.status-text');
@@ -26,24 +28,17 @@ async function loadConfig() {
     return false;
 }
 
-async function fetchTemperature() {
-    if (isFetching) return;
-    isFetching = true;
-
+async function fetchIndoorTemperature() {
     try {
-        statusText.textContent = '更新中...';
-        statusDot.className = 'dot active';
-
         const headers = {
             'Content-Type': 'application/json'
         };
 
-        // Add Authorization header if token is available
         if (CONFIG && CONFIG.HA_TOKEN) {
             headers['Authorization'] = `Bearer ${CONFIG.HA_TOKEN}`;
         }
 
-        const response = await fetch(API_URL, {
+        const response = await fetch(INDOOR_API_URL, {
             method: 'GET',
             headers: headers
         });
@@ -54,33 +49,83 @@ async function fetchTemperature() {
 
         const data = await response.json();
 
-        // Check if state exists and is valid
         if (data.state && data.state !== 'unavailable' && data.state !== 'unknown') {
             const temperature = parseFloat(data.state);
             if (!isNaN(temperature)) {
-                updateDisplay(temperature);
-                updateStatus(true);
-            } else {
-                throw new Error(`Invalid temperature value: ${data.state}`);
+                updateIndoorDisplay(temperature);
+                return true;
             }
-        } else {
-            console.warn('Sensor unavailable or unknown state:', data.state);
-            updateStatus(false, `センサー状態: ${data.state}`);
-            tempValueElement.textContent = '--';
+        }
+    } catch (error) {
+        console.error('Error fetching indoor temperature:', error);
+    }
+    return false;
+}
+
+async function fetchOutdoorTemperature() {
+    try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (CONFIG && CONFIG.HA_TOKEN) {
+            headers['Authorization'] = `Bearer ${CONFIG.HA_TOKEN}`;
         }
 
+        const response = await fetch(OUTDOOR_API_URL, {
+            method: 'GET',
+            headers: headers
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.state && data.state !== 'unavailable' && data.state !== 'unknown') {
+            const temperature = parseFloat(data.state);
+            if (!isNaN(temperature)) {
+                updateOutdoorDisplay(temperature);
+                return true;
+            }
+        }
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching outdoor temperature:', error);
+    }
+    return false;
+}
+
+async function fetchAllTemperatures() {
+    if (isFetching) return;
+    isFetching = true;
+
+    try {
+        statusText.textContent = '更新中...';
+        statusDot.className = 'dot active';
+
+        const [indoorSuccess, outdoorSuccess] = await Promise.all([
+            fetchIndoorTemperature(),
+            fetchOutdoorTemperature()
+        ]);
+
+        if (indoorSuccess || outdoorSuccess) {
+            updateStatus(true);
+            const now = new Date();
+            lastUpdatedElement.textContent = now.toLocaleTimeString();
+        } else {
+            updateStatus(false, 'データ取得失敗');
+        }
+    } catch (error) {
+        console.error('Error fetching temperatures:', error);
         updateStatus(false, error.message);
     } finally {
         isFetching = false;
-        // Schedule next fetch
-        setTimeout(fetchTemperature, 60000);
+        setTimeout(fetchAllTemperatures, 60000);
     }
 }
 
-function updateDisplay(temperature) {
-    // Animate the number change
+function updateIndoorDisplay(temperature) {
     const currentVal = parseFloat(tempValueElement.textContent) || 0;
     const newVal = parseFloat(temperature);
 
@@ -91,9 +136,17 @@ function updateDisplay(temperature) {
     }
 
     updateComfort(newVal);
+}
 
-    const now = new Date();
-    lastUpdatedElement.textContent = now.toLocaleTimeString();
+function updateOutdoorDisplay(temperature) {
+    const currentVal = parseFloat(outdoorTempValueElement.textContent) || 0;
+    const newVal = parseFloat(temperature);
+
+    if (currentVal !== newVal) {
+        animateValue(outdoorTempValueElement, currentVal, newVal, 1000);
+    } else {
+        outdoorTempValueElement.textContent = newVal.toFixed(1);
+    }
 }
 
 function updateStatus(isSuccess, message = '') {
@@ -148,7 +201,7 @@ function updateComfort(temp) {
 (async function init() {
     const configLoaded = await loadConfig();
     if (configLoaded) {
-        fetchTemperature();
+        fetchAllTemperatures();
     } else {
         console.error('Failed to load configuration. Temperature fetching will not start.');
         updateStatus(false, '設定の読み込みに失敗しました');

@@ -22,15 +22,27 @@
         </header>
 
         <div class="cards-grid">
-            <!-- Card 1: Temperature -->
+            <!-- Card 0: Outdoor Temperature -->
             <div class="card glass">
-                <h2 class="card-title">温度</h2>
+                <h2 class="card-title">外気温</h2>
+                <div class="temperature-display">
+                    <div class="value-wrapper">
+                        <span id="outdoor-temperature-value" class="value">--</span>
+                        <span class="unit">°C</span>
+                    </div>
+                    <div class="label">現在の外気温</div>
+                </div>
+            </div>
+
+            <!-- Card 1: Indoor Temperature -->
+            <div class="card glass">
+                <h2 class="card-title">室温</h2>
                 <div class="temperature-display">
                     <div class="value-wrapper">
                         <span id="temperature-value" class="value">--</span>
                         <span class="unit">°C</span>
                     </div>
-                    <div class="label">現在の温度</div>
+                    <div class="label">現在の室温</div>
                 </div>
             </div>
 
