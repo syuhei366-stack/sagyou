@@ -2,7 +2,7 @@
     --primary-color: #4f46e5;
     --secondary-color: #7c3aed;
     --text-color: #1e293b;
-    --bg-color: #f3f4f6;
+    --bg-color: #e0f2fe;
     --card-bg: rgba(255, 255, 255, 0.8);
     --glass-border: rgba(255, 255, 255, 0.8);
     --success-color: #16a34a;
@@ -34,7 +34,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.1) 0%, rgba(243, 244, 246, 0) 60%);
+    background: radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.15) 0%, rgba(224, 242, 254, 0) 70%);
     z-index: -1;
 }
 
