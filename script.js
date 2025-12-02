@@ -1,4 +1,5 @@
-// Use Cloudflare Functions proxy (no token needed in frontend)
+// Configuration will be loaded from /config endpoint
+let CONFIG = null;
 const API_URL = '/api/states/sensor.rtr574_i_52c0090b_temperature';
 
 const tempValueElement = document.getElementById('temperature-value');
@@ -10,19 +11,41 @@ const meterMarker = document.getElementById('meter-marker');
 
 let isFetching = false;
 
+// Load configuration from server
+async function loadConfig() {
+    try {
+        const response = await fetch('/config');
+        if (response.ok) {
+            CONFIG = await response.json();
+            console.log('Configuration loaded successfully');
+            return true;
+        }
+    } catch (error) {
+        console.error('Failed to load configuration:', error);
+    }
+    return false;
+}
+
 async function fetchTemperature() {
     if (isFetching) return;
     isFetching = true;
 
     try {
         statusText.textContent = '更新中...';
-        statusDot.className = 'dot active'; // Keep it green/active while fetching if previously successful, or just show activity
+        statusDot.className = 'dot active';
+
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        // Add Authorization header if token is available
+        if (CONFIG && CONFIG.HA_TOKEN) {
+            headers['Authorization'] = `Bearer ${CONFIG.HA_TOKEN}`;
+        }
 
         const response = await fetch(API_URL, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: headers
         });
 
         if (!response.ok) {
@@ -109,10 +132,10 @@ function updateComfort(temp) {
 
     meterMarker.style.left = `${percentage}%`;
 
-    if (temp < 20) {
+    if (temp < 18) {
         comfortText.textContent = '少し寒い';
         comfortText.style.color = '#3b82f6';
-    } else if (temp > 25) {
+    } else if (temp > 24) {
         comfortText.textContent = '少し暑い';
         comfortText.style.color = '#ef4444';
     } else {
@@ -121,5 +144,14 @@ function updateComfort(temp) {
     }
 }
 
-// Initial fetch
-fetchTemperature();
+// Initialize: Load config then start fetching
+(async function init() {
+    const configLoaded = await loadConfig();
+    if (configLoaded) {
+        fetchTemperature();
+    } else {
+        console.error('Failed to load configuration. Temperature fetching will not start.');
+        updateStatus(false, '設定の読み込みに失敗しました');
+    }
+})();
+
