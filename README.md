@@ -21,6 +21,9 @@ Home Assistantの温度センサーデータを表示するWebアプリケーシ
 Cloudflare Pagesの設定で以下の環境変数を設定してください:
 
 - `HA_TOKEN`: Home AssistantのLong-Lived Access Token
+- `HA_HOST`: Home Assistantのホスト名（例: `homeassistant-c79dr.taila92268.ts.net`）
+  - デフォルト値: `homeassistant-c79dr.taila92268.ts.net`
+  - 異なるホスト名を使用する場合は設定してください
 
 ### デプロイ設定
 

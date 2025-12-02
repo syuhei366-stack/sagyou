@@ -6,12 +6,23 @@ export async function onRequest(context) {
     const url = new URL(request.url);
     const route = url.pathname.replace('/api/', '');
 
-    // Home Assistant API URL
-    const HA_URL = 'http://192.168.1.100:8123';
+    // Home Assistant API URL - use environment variable or default
+    const HA_HOST = env.HA_HOST || 'homeassistant-c79dr.taila92268.ts.net';
+    const HA_URL = `https://${HA_HOST}`;
     const HA_TOKEN = env.HA_TOKEN;
 
     if (!HA_TOKEN) {
         return new Response(JSON.stringify({ error: 'HA_TOKEN not configured' }), {
+            status: 500,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        });
+    }
+
+    if (!HA_HOST) {
+        return new Response(JSON.stringify({ error: 'HA_HOST not configured' }), {
             status: 500,
             headers: {
                 'Content-Type': 'application/json',
