@@ -7,54 +7,72 @@
     <title>室内温度</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    </div>
-    <div class="value-wrapper">
-        <span id="temperature-value" class="value">--</span>
-        <span class="unit">°C</span>
-    </div>
-    <div class="label">現在の温度</div>
-    </div>
-    </div>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    <!-- Card 2: Comfort -->
-    <div class="card glass">
-        <h2 class="card-title">快適な温度域</h2>
-        <div class="comfort-display">
-            <div class="comfort-status">
-                <span id="comfort-text">--</span>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="title">室内温度モニター</h1>
+            <div class="status">
+                <span class="dot"></span>
+                <span class="status-text">接続中...</span>
             </div>
-            <div class="range-meter">
-                <div class="meter-bar">
-                    <div class="meter-fill" id="meter-fill"></div>
-                    <div class="meter-ticks">
-                        <span class="tick" style="left: 0%"></span>
-                        <span class="tick" style="left: 20%"></span>
-                        <span class="tick" style="left: 40%"></span>
-                        <span class="tick" style="left: 60%"></span>
-                        <span class="tick" style="left: 80%"></span>
-                        <span class="tick" style="left: 100%"></span>
+        </header>
+
+        <div class="cards-grid">
+            <!-- Card 1: Temperature -->
+            <div class="card glass">
+                <h2 class="card-title">温度</h2>
+                <div class="temperature-display">
+                    <div class="value-wrapper">
+                        <span id="temperature-value" class="value">--</span>
+                        <span class="unit">°C</span>
                     </div>
-                    <div class="meter-marker" id="meter-marker"></div>
-                </div>
-                <div class="range-labels">
-                    <span>10°C</span>
-                    <span>20°C</span>
-                    <span>30°C</span>
+                    <div class="label">現在の温度</div>
                 </div>
             </div>
-            <div class="comfort-info">
-                <p>適温範囲: 20°C - 25°C</p>
+
+            <!-- Card 2: Comfort -->
+            <div class="card glass">
+                <h2 class="card-title">快適な温度域</h2>
+                <div class="comfort-display">
+                    <div class="comfort-status">
+                        <span id="comfort-text">--</span>
+                    </div>
+                    <div class="range-meter">
+                        <div class="meter-bar">
+                            <div class="meter-fill" id="meter-fill"></div>
+                            <div class="meter-ticks">
+                                <span class="tick" style="left: 0%"></span>
+                                <span class="tick" style="left: 20%"></span>
+                                <span class="tick" style="left: 40%"></span>
+                                <span class="tick" style="left: 60%"></span>
+                                <span class="tick" style="left: 80%"></span>
+                                <span class="tick" style="left: 100%"></span>
+                            </div>
+                            <div class="meter-marker" id="meter-marker"></div>
+                        </div>
+                        <div class="range-labels">
+                            <span>10°C</span>
+                            <span>20°C</span>
+                            <span>30°C</span>
+                        </div>
+                    </div>
+                    <div class="comfort-info">
+                        <p>適温範囲: 20°C - 25°C</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    </div>
 
-    <footer>
-        <p>最終更新: <span id="last-updated">--:--:--</span></p>
-    </footer>
+        <footer>
+            <p>最終更新: <span id="last-updated">--:--:--</span></p>
+        </footer>
     </div>
-    </body>
 
     <script src="script.js"></script>
+</body>
 
 </html>

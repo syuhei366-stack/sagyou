@@ -1,6 +1,5 @@
-// Use relative path so requests go through the local proxy
+// Use Cloudflare Functions proxy (no token needed in frontend)
 const API_URL = '/api/states/sensor.rtr574_i_52c0090b_temperature';
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIyOGZkMDAxYTA0YzM0YmNmYjZmNDRiYmQ4NTRiNDE2MiIsImlhdCI6MTc2NDU2NjQzNCwiZXhwIjoyMDc5OTI2NDM0fQ.oNFT02bsTReNQOFsue9VbusD_vHZiGW9dvIixOs-mr8';
 
 const tempValueElement = document.getElementById('temperature-value');
 const lastUpdatedElement = document.getElementById('last-updated');
@@ -22,7 +21,6 @@ async function fetchTemperature() {
         const response = await fetch(API_URL, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${TOKEN}`,
                 'Content-Type': 'application/json'
             }
         });
