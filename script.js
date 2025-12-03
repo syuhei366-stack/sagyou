@@ -131,12 +131,11 @@ function updateIndoorDisplay(temperature) {
     const newVal = parseFloat(temperature);
 
     if (currentVal !== newVal) {
-        animateValue(tempValueElement, currentVal, newVal, 1000);
+        animateValue(tempValueElement, currentVal, newVal, 1000, updateComfort);
     } else {
         tempValueElement.textContent = newVal.toFixed(1);
+        updateComfort(newVal);
     }
-
-    updateComfort(newVal);
 }
 
 function updateOutdoorDisplay(temperature) {
@@ -164,13 +163,18 @@ function updateStatus(isSuccess, message = '') {
     }
 }
 
-function animateValue(obj, start, end, duration) {
+function animateValue(obj, start, end, duration, onUpdate) {
     let startTimestamp = null;
     const step = (timestamp) => {
         if (!startTimestamp) startTimestamp = timestamp;
         const progress = Math.min((timestamp - startTimestamp) / duration, 1);
         const value = progress * (end - start) + start;
         obj.innerHTML = value.toFixed(1);
+
+        if (onUpdate) {
+            onUpdate(value);
+        }
+
         if (progress < 1) {
             window.requestAnimationFrame(step);
         }
@@ -184,6 +188,8 @@ function updateComfort(temp) {
     const max = 30;
     const percentage = Math.max(0, Math.min(100, ((temp - min) / (max - min)) * 100));
 
+    console.log(`updateComfort called with temp: ${temp}, percentage: ${percentage}`);
+
     meterMarker.style.left = `${percentage}%`;
 
     const adviceContainer = document.getElementById('advice-container');
@@ -195,7 +201,7 @@ function updateComfort(temp) {
         adviceText.style.color = '#3b82f6';
         adviceContainer.style.display = 'flex';
         adviceContainer.style.borderColor = '#3b82f6';
-    } else if (temp > 24) {
+    } else if (temp > 25) { // 閾値を24から25に変更
         comfortText.textContent = '少し暑い';
         comfortText.style.color = '#ef4444';
         adviceText.textContent = 'エアコンの温度を下げてください';
