@@ -34,7 +34,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.15) 0%, rgba(224, 242, 254, 0) 70%);
+    /* 中心が水色(#e0f2fe)、外側が濃い青(#1e3a8a) */
+    background: radial-gradient(circle at center, #e0f2fe 0%, #1e3a8a 100%);
     z-index: -1;
 }
 
@@ -93,7 +94,8 @@ h1 {
     background: var(--card-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
+    border: 1px solid #1e3a8a;
+    /* 濃い青色の枠線 */
     border-radius: 24px;
     padding: 24px;
     box-shadow: 0 10px 40px -10px var(--shadow-color);
