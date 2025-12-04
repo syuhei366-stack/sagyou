@@ -194,14 +194,14 @@ function updateComfort(temp) {
 
     const adviceContainer = document.getElementById('advice-container');
 
-    if (temp < 18) {
+    if (temp < 19) { // 19℃未満は寒い
         comfortText.textContent = '少し寒い';
         comfortText.style.color = '#3b82f6';
         adviceText.textContent = 'エアコンの温度を上げてください';
         adviceText.style.color = '#3b82f6';
         adviceContainer.style.display = 'flex';
         adviceContainer.style.borderColor = '#3b82f6';
-    } else if (temp > 25) { // 閾値を24から25に変更
+    } else if (temp > 23) { // 23℃超は暑い
         comfortText.textContent = '少し暑い';
         comfortText.style.color = '#ef4444';
         adviceText.textContent = 'エアコンの温度を下げてください';
