@@ -140,8 +140,8 @@ h1 {
 }
 
 .advice-text {
-    font-size: 5rem;
-    /* 室温と同じ大きさ (5rem) */
+    font-size: 1.5rem;
+    /* 1.5remに変更 */
     font-weight: 700;
     /* 太字 */
     margin: 0;
@@ -314,6 +314,6 @@ footer {
 
     /* モバイルではアドバイスの文字サイズを少し小さくする */
     .advice-text {
-        font-size: 3rem;
+        font-size: 1.2rem;
     }
 }
