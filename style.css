@@ -140,8 +140,8 @@ h1 {
 }
 
 .advice-text {
-    font-size: 10rem;
-    /* さらに大きく (10rem) */
+    font-size: 15rem;
+    /* さらに大きく (15rem) */
     font-weight: 700;
     /* 太字 */
     margin: 0;
@@ -314,6 +314,6 @@ footer {
 
     /* モバイルではアドバイスの文字サイズを少し小さくする */
     .advice-text {
-        font-size: 4rem;
+        font-size: 6rem;
     }
 }
