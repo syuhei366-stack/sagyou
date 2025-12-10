@@ -194,14 +194,14 @@ function updateComfort(temp) {
 
     const adviceContainer = document.getElementById('advice-container');
 
-    if (temp < 19) { // 19℃未満は寒い
+    if (temp < 18) { // 18℃未満は寒い
         comfortText.textContent = '少し寒い';
         comfortText.style.color = '#3b82f6'; // 快適度テキストは青（寒色）のまま
         adviceText.textContent = 'エアコンの温度を上げてください';
         adviceText.style.color = '#ef4444'; // アドバイスは赤（暖房イメージ）
         adviceContainer.style.display = 'flex';
         adviceContainer.style.borderColor = '#ef4444'; // 枠線も赤
-    } else if (temp > 23) { // 23℃超は暑い
+    } else if (temp > 22) { // 22℃超は暑い
         comfortText.textContent = '少し暑い';
         comfortText.style.color = '#ef4444'; // 快適度テキストは赤（暖色）のまま
         adviceText.textContent = 'エアコンの温度を下げてください';
@@ -214,6 +214,46 @@ function updateComfort(temp) {
         adviceText.textContent = '';
         adviceContainer.style.display = 'none';
     }
+
+    // 背景色を温度に応じて変更（温度バーと同じグラデーション）
+    // 10℃ = 青(#3b82f6), 20℃ = 緑(#22c55e), 30℃ = 赤(#ef4444)
+    const bgColor = calculateBackgroundColor(temp, min, max);
+    document.body.style.backgroundColor = bgColor;
+}
+
+// 温度に応じた背景色を計算する関数
+function calculateBackgroundColor(temp, min, max) {
+    // 色の定義 (RGB)
+    const coldColor = { r: 59, g: 130, b: 246 };   // #3b82f6 (青)
+    const comfortColor = { r: 34, g: 197, b: 94 }; // #22c55e (緑)
+    const hotColor = { r: 239, g: 68, b: 68 };     // #ef4444 (赤)
+
+    // 温度を0-1の範囲に正規化
+    const normalizedTemp = Math.max(0, Math.min(1, (temp - min) / (max - min)));
+
+    let r, g, b;
+
+    if (normalizedTemp <= 0.5) {
+        // 青から緑へ (0 - 0.5)
+        const t = normalizedTemp * 2; // 0-1に再正規化
+        r = Math.round(coldColor.r + (comfortColor.r - coldColor.r) * t);
+        g = Math.round(coldColor.g + (comfortColor.g - coldColor.g) * t);
+        b = Math.round(coldColor.b + (comfortColor.b - coldColor.b) * t);
+    } else {
+        // 緑から赤へ (0.5 - 1)
+        const t = (normalizedTemp - 0.5) * 2; // 0-1に再正規化
+        r = Math.round(comfortColor.r + (hotColor.r - comfortColor.r) * t);
+        g = Math.round(comfortColor.g + (hotColor.g - comfortColor.g) * t);
+        b = Math.round(comfortColor.b + (hotColor.b - comfortColor.b) * t);
+    }
+
+    // 背景色は少し薄くするため、白と混ぜる（透明度的な効果）
+    const alpha = 0.3; // 薄さの調整（小さいほど薄い）
+    const bgR = Math.round(r * alpha + 255 * (1 - alpha));
+    const bgG = Math.round(g * alpha + 255 * (1 - alpha));
+    const bgB = Math.round(b * alpha + 255 * (1 - alpha));
+
+    return `rgb(${bgR}, ${bgG}, ${bgB})`;
 }
 
 // Initialize: Load config then start fetching
