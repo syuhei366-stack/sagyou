@@ -247,8 +247,15 @@ function calculateBackgroundColor(temp, min, max) {
         b = Math.round(comfortColor.b + (hotColor.b - comfortColor.b) * t);
     }
 
-    // 背景色は少し薄くするため、白と混ぜる（透明度的な効果）
-    const alpha = 0.3; // 薄さの調整（小さいほど薄い）
+    // 快適域かどうかで濃さを切り替え
+    // 快適域（18-22℃）: 薄い緑、不快適域: 濃い青/赤
+    let alpha;
+    if (temp >= 18 && temp <= 22) {
+        alpha = 0.2; // 快適域は薄い
+    } else {
+        alpha = 0.6; // 不快適域は濃い
+    }
+
     const bgR = Math.round(r * alpha + 255 * (1 - alpha));
     const bgG = Math.round(g * alpha + 255 * (1 - alpha));
     const bgB = Math.round(b * alpha + 255 * (1 - alpha));
