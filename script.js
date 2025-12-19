@@ -1,10 +1,12 @@
 // Configuration will be loaded from /config endpoint
 let CONFIG = null;
 const INDOOR_API_URL = '/api/states/sensor.rtr574_i_52c0090b_temperature';
+const INDOOR_HUMIDITY_API_URL = '/api/states/sensor.rtr574_i_52c0090b_humidity';
 const OUTDOOR_API_URL = '/api/states/sensor.hioki_wen_du';
 
 const tempValueElement = document.getElementById('temperature-value');
 const outdoorTempValueElement = document.getElementById('outdoor-temperature-value');
+const humidityValueElement = document.getElementById('humidity-value');
 const lastUpdatedElement = document.getElementById('last-updated');
 const statusDot = document.querySelector('.dot');
 const statusText = document.querySelector('.status-text');
@@ -63,6 +65,40 @@ async function fetchIndoorTemperature() {
     return false;
 }
 
+async function fetchIndoorHumidity() {
+    try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (CONFIG && CONFIG.HA_TOKEN) {
+            headers['Authorization'] = `Bearer ${CONFIG.HA_TOKEN}`;
+        }
+
+        const response = await fetch(INDOOR_HUMIDITY_API_URL, {
+            method: 'GET',
+            headers: headers
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.state && data.state !== 'unavailable' && data.state !== 'unknown') {
+            const humidity = parseFloat(data.state);
+            if (!isNaN(humidity)) {
+                updateHumidityDisplay(humidity);
+                return true;
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching indoor humidity:', error);
+    }
+    return false;
+}
+
 async function fetchOutdoorTemperature() {
     try {
         const headers = {
@@ -105,12 +141,13 @@ async function fetchAllTemperatures() {
         statusText.textContent = '更新中...';
         statusDot.className = 'dot active';
 
-        const [indoorSuccess, outdoorSuccess] = await Promise.all([
+        const [indoorSuccess, outdoorSuccess, humiditySuccess] = await Promise.all([
             fetchIndoorTemperature(),
-            fetchOutdoorTemperature()
+            fetchOutdoorTemperature(),
+            fetchIndoorHumidity()
         ]);
 
-        if (indoorSuccess || outdoorSuccess) {
+        if (indoorSuccess || outdoorSuccess || humiditySuccess) {
             updateStatus(true);
             const now = new Date();
             lastUpdatedElement.textContent = now.toLocaleTimeString();
@@ -146,6 +183,17 @@ function updateOutdoorDisplay(temperature) {
         animateValue(outdoorTempValueElement, currentVal, newVal, 1000);
     } else {
         outdoorTempValueElement.textContent = newVal.toFixed(1);
+    }
+}
+
+function updateHumidityDisplay(humidity) {
+    const currentVal = parseFloat(humidityValueElement.textContent) || 0;
+    const newVal = parseFloat(humidity);
+
+    if (currentVal !== newVal) {
+        animateValue(humidityValueElement, currentVal, newVal, 1000);
+    } else {
+        humidityValueElement.textContent = newVal.toFixed(1);
     }
 }
 
