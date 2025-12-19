@@ -1,10 +1,12 @@
 // Configuration will be loaded from /config endpoint
 let CONFIG = null;
 const INDOOR_API_URL = '/api/states/sensor.rtr574_i_52c0090b_temperature';
+const INDOOR_HUMIDITY_API_URL = '/api/states/sensor.rtr574_i_52c0090b_humidity';
 const OUTDOOR_API_URL = '/api/states/sensor.hioki_wen_du';
 
 const tempValueElement = document.getElementById('temperature-value');
 const outdoorTempValueElement = document.getElementById('outdoor-temperature-value');
+const humidityValueElement = document.getElementById('humidity-value');
 const lastUpdatedElement = document.getElementById('last-updated');
 const statusDot = document.querySelector('.dot');
 const statusText = document.querySelector('.status-text');
@@ -63,6 +65,40 @@ async function fetchIndoorTemperature() {
     return false;
 }
 
+async function fetchIndoorHumidity() {
+    try {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (CONFIG && CONFIG.HA_TOKEN) {
+            headers['Authorization'] = `Bearer ${CONFIG.HA_TOKEN}`;
+        }
+
+        const response = await fetch(INDOOR_HUMIDITY_API_URL, {
+            method: 'GET',
+            headers: headers
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.state && data.state !== 'unavailable' && data.state !== 'unknown') {
+            const humidity = parseFloat(data.state);
+            if (!isNaN(humidity)) {
+                updateHumidityDisplay(humidity);
+                return true;
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching indoor humidity:', error);
+    }
+    return false;
+}
+
 async function fetchOutdoorTemperature() {
     try {
         const headers = {
@@ -105,12 +141,13 @@ async function fetchAllTemperatures() {
         statusText.textContent = '更新中...';
         statusDot.className = 'dot active';
 
-        const [indoorSuccess, outdoorSuccess] = await Promise.all([
+        const [indoorSuccess, outdoorSuccess, humiditySuccess] = await Promise.all([
             fetchIndoorTemperature(),
-            fetchOutdoorTemperature()
+            fetchOutdoorTemperature(),
+            fetchIndoorHumidity()
         ]);
 
-        if (indoorSuccess || outdoorSuccess) {
+        if (indoorSuccess || outdoorSuccess || humiditySuccess) {
             updateStatus(true);
             const now = new Date();
             lastUpdatedElement.textContent = now.toLocaleTimeString();
@@ -146,6 +183,17 @@ function updateOutdoorDisplay(temperature) {
         animateValue(outdoorTempValueElement, currentVal, newVal, 1000);
     } else {
         outdoorTempValueElement.textContent = newVal.toFixed(1);
+    }
+}
+
+function updateHumidityDisplay(humidity) {
+    const currentVal = parseFloat(humidityValueElement.textContent) || 0;
+    const newVal = parseFloat(humidity);
+
+    if (currentVal !== newVal) {
+        animateValue(humidityValueElement, currentVal, newVal, 1000);
+    } else {
+        humidityValueElement.textContent = newVal.toFixed(1);
     }
 }
 
@@ -197,22 +245,24 @@ function updateComfort(temp) {
     if (temp < 18) { // 18℃未満は寒い
         comfortText.textContent = '少し寒い';
         comfortText.style.color = '#3b82f6'; // 快適度テキストは青（寒色）のまま
-        adviceText.textContent = 'エアコンの温度を上げてください';
+        adviceText.textContent = '暖房の温度を２２℃に上げてください';
         adviceText.style.color = '#ef4444'; // アドバイスは赤（暖房イメージ）
         adviceContainer.style.display = 'flex';
         adviceContainer.style.borderColor = '#ef4444'; // 枠線も赤
     } else if (temp > 22) { // 22℃超は暑い
         comfortText.textContent = '少し暑い';
         comfortText.style.color = '#ef4444'; // 快適度テキストは赤（暖色）のまま
-        adviceText.textContent = 'エアコンの温度を下げてください';
+        adviceText.textContent = '暖房の温度を２２℃にしてください';
         adviceText.style.color = '#3b82f6'; // アドバイスは青（冷房イメージ）
         adviceContainer.style.display = 'flex';
         adviceContainer.style.borderColor = '#3b82f6'; // 枠線も青
     } else {
         comfortText.textContent = '快適';
         comfortText.style.color = '#22c55e';
-        adviceText.textContent = '';
-        adviceContainer.style.display = 'none';
+        adviceText.textContent = '快適です。この状態を維持しましょう！';
+        adviceText.style.color = '#22c55e'; // 快適時は緑
+        adviceContainer.style.display = 'flex';
+        adviceContainer.style.borderColor = '#22c55e'; // 枠線も緑
     }
 
     // 背景色を温度に応じて変更（温度バーと同じグラデーション）
@@ -241,21 +291,17 @@ function calculateBackgroundColor(temp, min, max) {
         b = Math.round(coldColor.b + (comfortColor.b - coldColor.b) * t);
     } else {
         // 緑から赤へ (0.5 - 1)
-        const t = (normalizedTemp - 0.5) * 2; // 0-1に再正規化
+        // 暑さを強調するため、少し早めに赤みがかるように調整 (平方根を使ってカーブを変える)
+        let t = (normalizedTemp - 0.5) * 2;
+        t = Math.pow(t, 0.7); // 1より小さい指数でカーブを膨らませ、赤への変化を早める
+
         r = Math.round(comfortColor.r + (hotColor.r - comfortColor.r) * t);
         g = Math.round(comfortColor.g + (hotColor.g - comfortColor.g) * t);
         b = Math.round(comfortColor.b + (hotColor.b - comfortColor.b) * t);
     }
 
-    // 快適域かどうかで濃さを切り替え
-    // 快適域（18-22℃）: 薄い緑、不快適域: 濃い青/赤
-    let alpha;
-    if (temp >= 18 && temp <= 22) {
-        alpha = 0.2; // 快適域は薄い
-    } else {
-        alpha = 0.6; // 不快適域は濃い
-    }
-
+    // 背景色は少し薄くするため、白と混ぜる（透明度的な効果）
+    const alpha = 0.4; // 色味を少し強くする (0.3 -> 0.4)
     const bgR = Math.round(r * alpha + 255 * (1 - alpha));
     const bgG = Math.round(g * alpha + 255 * (1 - alpha));
     const bgB = Math.round(b * alpha + 255 * (1 - alpha));

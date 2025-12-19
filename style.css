@@ -83,7 +83,7 @@ h1 {
 /* Cards Grid Layout */
 .cards-grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     align-items: stretch;
     /* 高さを揃える */
@@ -149,21 +149,13 @@ h1 {
     /* 行間を調整 */
 }
 
-/* 室温カード（中央）を大きく */
-.cards-grid .card:nth-child(2) {
-    font-size: 1.2em;
-    padding: 32px;
-    z-index: 10;
-    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.15);
+/* 室温カードの強調スタイルを削除し、全てのカードを統一 */
+.cards-grid .card:nth-child(3) {
+    /* 他のカードと同じスタイルを使用するため、特別なスタイルは削除 */
 }
 
-.cards-grid .card:nth-child(2) .value {
-    font-size: 5rem;
-}
+/* モバイル対応用に入稿順序だけは維持したいかもしれないが、サイズは統一 */
 
-.cards-grid .card:nth-child(2) .card-title {
-    font-size: 1.5rem;
-}
 
 .card-title {
     font-size: 1.125rem;
@@ -308,7 +300,7 @@ footer {
         grid-template-columns: 1fr;
     }
 
-    .cards-grid .card:nth-child(2) {
+    .cards-grid .card:nth-child(3) {
         order: -1;
     }
 
