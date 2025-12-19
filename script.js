@@ -211,7 +211,7 @@ function updateComfort(temp) {
     } else {
         comfortText.textContent = '快適';
         comfortText.style.color = '#22c55e';
-        adviceText.textContent = '快適な室温です。このまま維持してください。';
+        adviceText.textContent = '快適です。この状態を維持しましょう！';
         adviceText.style.color = '#22c55e'; // 快適時は緑
         adviceContainer.style.display = 'flex';
         adviceContainer.style.borderColor = '#22c55e'; // 枠線も緑
