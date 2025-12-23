@@ -93,7 +93,8 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 15px;
+    /* 数値を中央に寄せるために間隔を縮小 */
 }
 
 .combined-display .temperature-display {
@@ -213,6 +214,11 @@ h1 {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+/* 統合カード内の数値サイズ調整 */
+.combined-display .value {
+    font-size: 2.8rem;
 }
 
 .unit {
