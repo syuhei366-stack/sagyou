@@ -34,27 +34,27 @@
                 </div>
             </div>
 
-            <!-- Card 0.5: Indoor Humidity -->
-            <div class="card glass side-card">
-                <h2 class="card-title">湿度</h2>
-                <div class="temperature-display">
-                    <div class="value-wrapper">
-                        <span id="humidity-value" class="value">--</span>
-                        <span class="unit">%</span>
-                    </div>
-                    <div class="label">現在の湿度</div>
-                </div>
-            </div>
-
-            <!-- Card 1: Indoor Temperature -->
+            <!-- Card 1: Indoor Temp / Humidity -->
             <div class="card glass center-card">
-                <h2 class="card-title">室温</h2>
-                <div class="temperature-display">
-                    <div class="value-wrapper">
-                        <span id="temperature-value" class="value">--</span>
-                        <span class="unit">°C</span>
+                <h2 class="card-title">室温 / 湿度</h2>
+                <div class="combined-display">
+                    <div class="temperature-display">
+                        <div class="value-wrapper">
+                            <span id="temperature-value" class="value">--</span>
+                            <span class="unit">°C</span>
+                        </div>
+                        <div class="label">室温</div>
                     </div>
-                    <div class="label">現在の室温</div>
+
+                    <div class="divider">/</div>
+
+                    <div class="temperature-display">
+                        <div class="value-wrapper">
+                            <span id="humidity-value" class="value">--</span>
+                            <span class="unit">%</span>
+                        </div>
+                        <div class="label">湿度</div>
+                    </div>
                 </div>
             </div>
 

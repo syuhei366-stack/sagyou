@@ -245,14 +245,14 @@ function updateComfort(temp) {
     if (temp < 19) { // 19℃未満は寒い
         comfortText.textContent = '少し寒い';
         comfortText.style.color = '#3b82f6'; // 快適度テキストは青（寒色）のまま
-        adviceText.textContent = '暖房の温度を２２℃に上げてください';
+        adviceText.textContent = '暖房の温度を24℃に上げてください';
         adviceText.style.color = '#ef4444'; // アドバイスは赤（暖房イメージ）
         adviceContainer.style.display = 'flex';
         adviceContainer.style.borderColor = '#ef4444'; // 枠線も赤
     } else if (temp > 23) { // 23℃超は暑い
         comfortText.textContent = '少し暑い';
         comfortText.style.color = '#ef4444'; // 快適度テキストは赤（暖色）のまま
-        adviceText.textContent = '暖房の温度を２２℃にしてください';
+        adviceText.textContent = '暖房の温度を24℃にしてください';
         adviceText.style.color = '#3b82f6'; // アドバイスは青（冷房イメージ）
         adviceContainer.style.display = 'flex';
         adviceContainer.style.borderColor = '#3b82f6'; // 枠線も青

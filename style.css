@@ -83,10 +83,29 @@ h1 {
 /* Cards Grid Layout */
 .cards-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     align-items: stretch;
     /* 高さを揃える */
+}
+
+.combined-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.combined-display .temperature-display {
+    padding: 0;
+}
+
+.divider {
+    font-size: 3rem;
+    font-weight: 200;
+    color: #cbd5e1;
+    padding-bottom: 20px;
+    /* 数字とのベースライン調整 */
 }
 
 .card {
@@ -149,10 +168,7 @@ h1 {
     /* 行間を調整 */
 }
 
-/* 室温カードの強調スタイルを削除し、全てのカードを統一 */
-.cards-grid .card:nth-child(3) {
-    /* 他のカードと同じスタイルを使用するため、特別なスタイルは削除 */
-}
+
 
 /* モバイル対応用に入稿順序だけは維持したいかもしれないが、サイズは統一 */
 
@@ -300,7 +316,7 @@ footer {
         grid-template-columns: 1fr;
     }
 
-    .cards-grid .card:nth-child(3) {
+    .cards-grid .card:nth-child(2) {
         order: -1;
     }
 
